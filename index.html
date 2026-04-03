@@ -2,55 +2,41 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Навчальна гра</title>
     <style>
-        body { margin: 0; font-family: 'Comic Sans MS', sans-serif; overflow: hidden; background: #4da6ff; }
-        /* Екран Бібліотеки */
-        #library { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; padding: 20px; height: 100vh; box-sizing: border-box; background: #f0f8ff; }
-        .category-card { background: #fff; border: 4px solid #004d99; border-radius: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; text-align: center; font-weight: bold; font-size: 18px; color: #004d99; box-shadow: 0 6px 0 #b0d4e3; }
-        .category-card:hover { transform: translateY(-5px); background: #ffeb99; }
-        .category-card span { font-size: 40px; margin-bottom: 10px; }
-
-        /* Ігровий екран */
+        body { margin: 0; font-family: 'Arial Rounded MT Bold', sans-serif; overflow: hidden; background: #4da6ff; }
+        #library { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; padding: 40px; height: 100vh; box-sizing: border-box; background: #e6f7ff; }
+        .category-card { background: #fff; border: 5px solid #004d99; border-radius: 25px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s; font-size: 24px; color: #004d99; box-shadow: 0 8px 0 #b0c4de; }
+        .category-card:hover { transform: scale(1.05); background: #fff5cc; }
+        .category-card span { font-size: 60px; margin-bottom: 10px; }
         #game-screen { display: none; width: 100vw; height: 100vh; background: linear-gradient(to bottom, #4da6ff, #99ccff); flex-direction: column; justify-content: center; align-items: center; position: relative; }
-        .cloud { position: absolute; background: #fff; border-radius: 50px; opacity: 0.8; animation: move linear infinite; }
-        .cloud::after { content: ''; position: absolute; background: #fff; border-radius: 50%; width: 80px; height: 80px; top: -40px; left: 30px; }
-        @keyframes move { from { left: -200px; } to { left: 110vw; } }
-
-        #word-display { display: flex; gap: 20px; z-index: 10; }
-        .tile { width: 120px; height: 150px; background: #fff9e6; border-radius: 25px; display: flex; justify-content: center; align-items: center; font-size: 90px; font-weight: bold; color: #004d99; border: 4px solid #004d99; box-shadow: 0 10px 0 #e6cc80; }
-        .active { background: #ffcc00; animation: breathe 1s infinite alternate; }
-        .error { background: #ff4d4d; animation: shake 0.2s infinite; }
-        @keyframes breathe { from { transform: scale(1); } to { transform: scale(1.1); } }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(10px); } 75% { transform: translateX(-10px); } }
-
-        /* Приз */
+        .cloud { position: absolute; background: #fff; border-radius: 50px; opacity: 0.8; animation: move linear infinite; z-index: 1; }
+        @keyframes move { from { left: -250px; } to { left: 110vw; } }
+        #word-display { display: flex; gap: 15px; z-index: 10; }
+        .tile { width: 110px; height: 140px; background: #fff; border-radius: 20px; display: flex; justify-content: center; align-items: center; font-size: 80px; font-weight: bold; color: #004d99; border: 4px solid #004d99; box-shadow: 0 10px 0 #d1d1d1; }
+        .active { background: #ffcc00; animation: breathe 1s infinite alternate; border-color: #ff9900; }
+        .correct { background: #ccffcc; color: #006600; border-color: #006600; }
+        .error { background: #ff4d4d !important; animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes breathe { from { transform: scale(1); } to { transform: scale(1.08); } }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
         #prize-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 100; flex-direction: column; justify-content: center; align-items: center; }
-        #prize-img { max-width: 80%; max-height: 70%; border-radius: 20px; }
-        
-        /* Фінал */
-        #final-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; justify-content: center; align-items: center; color: #fff; font-size: 60px; text-align: center; }
+        #prize-img { max-width: 90%; max-height: 80%; border: 10px solid #ffcc00; border-radius: 30px; object-fit: contain; }
+        #final-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; justify-content: center; align-items: center; color: #ffcc00; font-size: 80px; text-align: center; }
     </style>
 </head>
 <body>
-
 <div id="library"></div>
-
 <div id="game-screen">
-    <div class="cloud" style="width:150px; height:60px; top:10%; animation-duration:20s;"></div>
-    <div class="cloud" style="width:120px; height:50px; top:30%; animation-duration:30s; animation-delay:-5s;"></div>
+    <div class="cloud" style="width:200px; height:80px; top:15%; animation-duration:25s;"></div>
+    <div class="cloud" style="width:150px; height:60px; top:40%; animation-duration:35s; animation-delay:-10s;"></div>
     <div id="word-display"></div>
 </div>
-
 <div id="prize-overlay">
     <img id="prize-img" src="">
-    <h2 style="color:#004d99">Натисни ПРОБІЛ ➔</h2>
+    <h1 style="color:#004d99; font-size:40px;">Натисни ПРОБІЛ</h1>
 </div>
-
 <div id="final-screen">
-    <div>ТИ МОЛОДЕЦЬ!<br><button onclick="location.reload()" style="padding:20px; font-size:30px; margin-top:30px; cursor:pointer;">В БІБЛІОТЕКУ</button></div>
+    <div>🎉 ТИ МОЛОДЕЦЬ! 🎉<br><button onclick="location.reload()" style="padding:20px 40px; font-size:40px; margin-top:40px; cursor:pointer; border-radius:20px; background:#ffcc00; border:none; font-weight:bold;">У БІБЛІОТЕКУ</button></div>
 </div>
-
 <script>
 const categories = [
     { n: "Тварини", e: "🐾", words: ["КІТ"] },
@@ -65,31 +51,28 @@ const categories = [
     { n: "Одяг", e: "👗", words: [] }, { n: "Час", e: "⏳", words: [] },
     { n: "Різне", e: "🌀", words: [] }
 ];
-
 let currentWords = [], wordIdx = 0, charIdx = 0, isPrize = false;
-
-function initLibrary() {
+function init() {
     const lib = document.getElementById('library');
     categories.forEach(cat => {
         const div = document.createElement('div');
         div.className = 'category-card';
         div.innerHTML = `<span>${cat.e}</span>${cat.n}`;
-        div.onclick = () => startBlock(cat.words);
+        div.onclick = () => { if(cat.words.length) startBlock(cat.words); };
         lib.appendChild(div);
     });
 }
-
 function startBlock(words) {
-    if (!words.length) return alert("Блок порожній!");
-    currentWords = words.sort(() => Math.random() - 0.5);
+    currentWords = [...words].sort(() => Math.random() - 0.5);
     wordIdx = 0;
     document.getElementById('library').style.display = 'none';
     document.getElementById('game-screen').style.display = 'flex';
     nextWord();
 }
-
-function playSnd(n) { new Audio(n.toUpperCase() + '.mp3').play().catch(()=>{}); }
-
+function playSnd(file) { 
+    const a = new Audio(file + '.mp3');
+    a.play().catch(() => console.log("Немає звуку: " + file));
+}
 function nextWord() {
     if (wordIdx >= currentWords.length) {
         document.getElementById('final-screen').style.display = 'flex';
@@ -97,20 +80,20 @@ function nextWord() {
     }
     charIdx = 0; isPrize = false;
     render();
-    playSnd(currentWords[wordIdx]);
+    setTimeout(() => playSnd(currentWords[wordIdx]), 500);
 }
-
 function render() {
     const display = document.getElementById('word-display');
     display.innerHTML = '';
     currentWords[wordIdx].split('').forEach((l, i) => {
         const d = document.createElement('div');
-        d.className = 'tile' + (i === charIdx ? ' active' : '');
+        d.className = 'tile';
+        if (i < charIdx) d.classList.add('correct');
+        if (i === charIdx) d.classList.add('active');
         d.innerText = l;
         display.appendChild(d);
     });
 }
-
 window.onkeydown = (e) => {
     if (isPrize && e.code === 'Space') {
         document.getElementById('prize-overlay').style.display = 'none';
@@ -118,26 +101,37 @@ window.onkeydown = (e) => {
         return;
     }
     if (document.getElementById('game-screen').style.display === 'flex' && !isPrize) {
+        const key = e.key.toUpperCase();
         const target = currentWords[wordIdx][charIdx];
-        if (e.key.toUpperCase() === target) {
-            playSnd(target);
+        if (key === target) {
+            playSnd(key);
             charIdx++;
             if (charIdx === currentWords[wordIdx].length) {
-                render(); playSnd(currentWords[wordIdx]);
+                render();
                 setTimeout(() => {
-                    isPrize = true;
-                    document.getElementById('prize-overlay').style.display = 'flex';
-                }, 1000);
+                    playSnd(currentWords[wordIdx]);
+                    showPrize();
+                }, 800);
             } else render();
-        } else {
+        } else if (e.key !== "Shift" && e.key !== "Control") {
             const activeTile = document.querySelector('.active');
-            activeTile.classList.add('error');
-            setTimeout(() => activeTile.classList.remove('error'), 500);
+            if(activeTile) {
+                activeTile.classList.add('error');
+                setTimeout(() => activeTile.classList.remove('error'), 400);
+            }
         }
     }
 };
-
-initLibrary();
+function showPrize() {
+    const word = currentWords[wordIdx];
+    const prizeImg = document.getElementById('prize-img');
+    prizeImg.src = encodeURIComponent(word) + '.jpg'; 
+    setTimeout(() => {
+        isPrize = true;
+        document.getElementById('prize-overlay').style.display = 'flex';
+    }, 1500);
+}
+init();
 </script>
 </body>
 </html>
