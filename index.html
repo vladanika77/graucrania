@@ -8,23 +8,19 @@
         :root { --blue: #4da6ff; --dark-blue: #004d99; --yellow: #ffcc00; --red: #ff4d4d; --green: #2ecc71; }
         body { margin: 0; font-family: 'Arial Rounded MT Bold', 'Helvetica', sans-serif; overflow: hidden; background: var(--blue); }
         
-        /* Бібліотека */
         #library { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; padding: 40px; height: 100vh; box-sizing: border-box; background: #eef9ff; overflow-y: auto; }
         .category-card { background: #fff; border: 6px solid var(--dark-blue); border-radius: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s; font-size: 24px; color: var(--dark-blue); box-shadow: 0 10px 0 #b0c4de; position: relative; overflow: hidden; }
         .category-card:hover { transform: scale(1.05) translateY(-5px); filter: brightness(1.1); }
         .category-card span { font-size: 65px; margin-bottom: 10px; z-index: 2; }
         .category-card b { z-index: 2; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Ігровий екран */
         #game-screen { display: none; width: 100vw; height: 100vh; background: linear-gradient(to bottom, #4da6ff, #b3d9ff); flex-direction: column; justify-content: center; align-items: center; position: relative; }
         
-        /* Хмаринки */
-        .cloud { position: absolute; background: #fff; border-radius: 100px; opacity: 0.9; animation: move linear infinite; z-index: 1; }
+        .cloud { position: absolute; background: #fff; border-radius: 100px; opacity: 0.9; animation: move linear infinite; z-index: 1; pointer-events: none; }
         .cloud::after, .cloud::before { content: ''; position: absolute; background: #fff; border-radius: 50%; }
         .cloud::after { width: 100px; height: 100px; top: -50px; left: 30px; }
         .cloud::before { width: 80px; height: 80px; top: -30px; right: 30px; }
 
-        /* Плитки з буквами */
         #word-display { display: flex; gap: 20px; z-index: 10; flex-wrap: wrap; justify-content: center; }
         .tile { width: 130px; height: 170px; background: #fff; border-radius: 25px; display: flex; justify-content: center; align-items: center; font-size: 100px; font-weight: bold; color: var(--dark-blue); border: 5px solid var(--dark-blue); box-shadow: 0 12px 0 #cbdadb; transition: 0.2s; }
         .active { background: var(--yellow); border-color: #f39c12; animation: breathe 1s infinite alternate; box-shadow: 0 12px 0 #d68910; }
@@ -35,15 +31,16 @@
         @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
         @keyframes move { from { left: -300px; } to { left: 110vw; } }
 
-        /* Приз */
         #prize-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 100; flex-direction: column; justify-content: center; align-items: center; }
         #prize-img { max-width: 85%; max-height: 80%; border: 15px solid var(--yellow); border-radius: 40px; box-shadow: 0 0 50px rgba(0,0,0,0.2); }
         .btn-next { margin-top: 30px; padding: 20px 50px; font-size: 30px; background: var(--green); color: #fff; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; box-shadow: 0 8px 0 #219150; }
 
-        /* Феєрверк */
         #final-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; overflow: hidden; }
-        .fw { position: absolute; width: 5px; height: 5px; border-radius: 50%; opacity: 0; }
-        .final-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--yellow); font-size: 80px; text-align: center; z-index: 201; text-shadow: 0 0 20px #ffcc00; pointer-events: none; }
+        .fw { position: absolute; width: 5px; height: 5px; border-radius: 50%; opacity: 0; pointer-events: none; }
+        .final-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; z-index: 300; width: 100%; }
+        .final-text { color: var(--yellow); font-size: 80px; text-align: center; text-shadow: 0 0 20px #ffcc00; margin-bottom: 40px; pointer-events: none; }
+        .final-btn { padding: 20px 40px; font-size: 30px; cursor: pointer; border-radius: 20px; border: none; background: var(--yellow); font-weight: bold; box-shadow: 0 8px 0 #b89600; transition: 0.2s; pointer-events: auto !important; }
+        .final-btn:active { transform: translateY(4px); box-shadow: 0 4px 0 #b89600; }
     </style>
 </head>
 <body>
@@ -61,8 +58,9 @@
 </div>
 
 <div id="final-screen">
-    <div class="final-text">ТИ МОЛОДЕЦЬ!<br>
-<button onclick="location.reload()" style="position:relative; z-index:9999; pointer-events: auto !important; margin-top:40px; padding:20px 40px; font-size:30px; cursor:pointer; border-radius:20px; border:none; background:#ffcc00; font-weight:bold; box-shadow: 0 8px 0 #b89600;">В БІБЛІОТЕКУ</button>
+    <div class="final-content">
+        <div class="final-text">ТИ МОЛОДЕЦЬ!</div>
+        <button class="final-btn" onclick="location.reload()">В БІБЛІОТЕКУ</button>
     </div>
 </div>
 
