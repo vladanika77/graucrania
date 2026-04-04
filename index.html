@@ -8,10 +8,11 @@
         :root { --blue: #4da6ff; --dark-blue: #004d99; --yellow: #ffcc00; --red: #ff4d4d; --green: #2ecc71; }
         body { margin: 0; font-family: 'Arial Rounded MT Bold', 'Helvetica', sans-serif; overflow: hidden; background: var(--blue); }
         
-        #library { display: grid; grid-template-columns: repeat(5, 10fr); gap: 20px; padding: 40px; height: 100vh; box-sizing: border-box; background: #eef9ff; overflow-y: auto; }
+        #library { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; padding: 40px; height: 100vh; box-sizing: border-box; background: #eef9ff; overflow-y: auto; }
         .category-card { background: #fff; border: 6px solid var(--dark-blue); border-radius: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s; font-size: 24px; color: var(--dark-blue); box-shadow: 0 10px 0 #b0c4de; position: relative; overflow: hidden; height: 180px; }
         .category-card:hover { transform: scale(1.05) translateY(-5px); filter: brightness(1.1); }
         .category-card span { font-size: 65px; margin-bottom: 10px; }
+        .locked { opacity: 0.5; filter: grayscale(1); cursor: default; }
 
         #game-screen { display: none; width: 100vw; height: 100vh; background: linear-gradient(to bottom, #4da6ff, #b3d9ff); flex-direction: column; justify-content: center; align-items: center; position: relative; }
         
@@ -25,15 +26,15 @@
         @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
 
         #prize-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; flex-direction: column; justify-content: center; align-items: center; background: #000; }
-        #prize-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; filter: blur(20px) brightness(0.6); transform: scale(1.1); z-index: -1; }
-        #prize-img { max-width: 90%; max-height: 80%; border: 10px solid #fff; border-radius: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.5); z-index: 2; object-fit: contain; }
-        .btn-next { margin-top: 30px; padding: 20px 50px; font-size: 30px; background: var(--green); color: #fff; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; z-index: 10; box-shadow: 0 8px 0 #1e8449; }
+        #prize-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; filter: blur(30px) brightness(0.6); transform: scale(1.2); z-index: -1; }
+        #prize-img { max-width: 85%; max-height: 75%; border: 10px solid #fff; border-radius: 25px; box-shadow: 0 0 60px rgba(0,0,0,0.7); z-index: 2; object-fit: contain; background: #000; }
+        .btn-next { margin-top: 35px; padding: 25px 60px; font-size: 35px; background: var(--green); color: #fff; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; z-index: 10; box-shadow: 0 10px 0 #1e8449; }
 
         #final-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; overflow: hidden; }
         .fw { position: absolute; width: 5px; height: 5px; border-radius: 50%; opacity: 0; pointer-events: none; }
         .final-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; z-index: 300; width: 100%; }
-        .final-text { color: var(--yellow); font-size: 80px; text-align: center; text-shadow: 0 0 20px #ffcc00; margin-bottom: 40px; pointer-events: none; }
-        .final-btn { padding: 20px 40px; font-size: 30px; cursor: pointer; border-radius: 20px; border: none; background: var(--yellow); font-weight: bold; box-shadow: 0 8px 0 #b89600; pointer-events: auto !important; }
+        .final-text { color: var(--yellow); font-size: 80px; text-align: center; text-shadow: 0 0 25px #ffcc00; margin-bottom: 50px; pointer-events: none; }
+        .final-btn { padding: 25px 50px; font-size: 35px; cursor: pointer; border-radius: 25px; border: none; background: var(--yellow); font-weight: bold; box-shadow: 0 10px 0 #b89600; pointer-events: auto !important; }
     </style>
 </head>
 <body>
@@ -56,9 +57,26 @@
 
 <script>
 const categories = [
-    { n: "Тварини", e: "🐾", c: "#FFadad", words: ["БІЛКА","ВЕДМІДЬ","ВІВЦЯ","ВІСЛЮК","ВОВК","ГОЛУБ","ГУСАК","ДЕЛЬФІН","ЖАБА","ЖИРАФ","ЗАЯЦЬ","ЗЕБРА","ІГУАНА","ЇЖАК","КОРОВА","КУРКА","ЛЕВ","ЛИСИЦЯ","МАВПА","ПАНДА","ПЕС","ПІВЕНЬ","ПІНГВІН","СЛОН","СОРОКА","ТИГР","УДАВ","ФЛАМІНГО","ХОМ'ЯК","ЧЕРЕПАХА"] },
+    { n: "Тварини", e: "🐾", c: "#FFadad", words: ["КІТ","БІЛКА","ВЕДМІДЬ","ВІВЦЯ","ВІСЛЮК","ВОВК","ГОЛУБ","ГУСАК","ДЕЛЬФІН","ЖАБА","ЖИРАФ","ЗАЯЦЬ","ЗЕБРА","ІГУАНА","ЇЖАК","КОРОВА","КУРКА","ЛЕВ","ЛИСИЦЯ","МАВПА","ПАНДА","ПЕС","ПІВЕНЬ","ПІНГВІН","СЛОН","СОРОКА","ТИГР","УДАВ","ФЛАМІНГО","ХОМ'ЯК","ЧЕРЕПАХА"] },
     { n: "Їжа", e: "🍎", c: "#FFd6a5", words: [] },
-    { n: "Сім'я", e: "👨‍👩‍👦", c: "#A0c4ff", words: [] }
+    { n: "Сім'я", e: "👨‍👩‍👦", c: "#A0c4ff", words: [] },
+    { n: "Кольори", e: "🌈", c: "#CAffbf", words: [] },
+    { n: "Цифри", e: "🔢", c: "#9Bf6ff", words: [] },
+    { n: "Частини тіла", e: "👂", c: "#FDffb6", words: [] },
+    { n: "Напої", e: "🥤", c: "#Bdb2ff", words: [] },
+    { n: "Фрукти", e: "🍇", c: "#FfC6ff", words: [] },
+    { n: "Емоції", e: "😊", c: "#FFadad", words: [] },
+    { n: "Дієслова", e: "🏃", c: "#FFd6a5", words: [] },
+    { n: "Якості", e: "✨", c: "#FDffb6", words: [] },
+    { n: "Місця", e: "🌳", c: "#CAffbf", words: [] },
+    { n: "Спорт", e: "⚽", c: "#9Bf6ff", words: [] },
+    { n: "Іграшки", e: "🧸", c: "#A0c4ff", words: [] },
+    { n: "Дім", e: "🏠", c: "#Bdb2ff", words: [] },
+    { n: "Транспорт", e: "🚗", c: "#FfC6ff", words: [] },
+    { n: "Погода", e: "🌤", c: "#FFadad", words: [] },
+    { n: "Одяг", e: "👗", c: "#FFd6a5", words: [] },
+    { n: "Час", e: "⏳", c: "#FDffb6", words: [] },
+    { n: "Різне", e: "🌀", c: "#CAffbf", words: [] }
 ];
 
 let currentWords = [], wordIdx = 0, charIdx = 0, isPrize = false;
@@ -67,7 +85,7 @@ function init() {
     const lib = document.getElementById('library');
     categories.forEach(cat => {
         const div = document.createElement('div');
-        div.className = 'category-card';
+        div.className = 'category-card' + (cat.words.length ? '' : ' locked');
         div.style.backgroundColor = cat.c;
         div.innerHTML = `<span>${cat.e}</span><b>${cat.n}</b>`;
         div.onclick = () => { if(cat.words.length) startBlock(cat.words); };
@@ -76,15 +94,16 @@ function init() {
 }
 
 function playSnd(name) {
-    const audio = new Audio();
-    const cleanName = encodeURIComponent(name.toUpperCase());
-    // Спроба 1: завантажити як є (якщо розширення вже в імені)
-    audio.src = cleanName;
-    audio.onerror = () => {
-        // Спроба 2: додати .mp3, якщо перша спроба не вдалася
-        audio.src = cleanName + '.mp3';
-    };
-    audio.play().catch(e => console.log("Sound error:", name));
+    // Спочатку перевіряємо, чи в назві вже є крапка (тобто чи є розширення)
+    let src = encodeURIComponent(name.toUpperCase());
+    if (!src.includes('.')) src += '.mp3';
+    
+    const audio = new Audio(src);
+    audio.play().catch(() => {
+        // Якщо не спрацювало з .mp3, спробуємо без нього (для старих файлів)
+        const altAudio = new Audio(encodeURIComponent(name.toUpperCase()));
+        altAudio.play().catch(e => console.log("Sound error:", name));
+    });
 }
 
 function startBlock(words) {
