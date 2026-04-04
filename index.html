@@ -8,53 +8,43 @@
         :root { --blue: #4da6ff; --dark-blue: #004d99; --yellow: #ffcc00; --red: #ff4d4d; --green: #2ecc71; }
         body { margin: 0; font-family: 'Arial Rounded MT Bold', 'Helvetica', sans-serif; overflow: hidden; background: var(--blue); }
         
-        #library { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; padding: 40px; height: 100vh; box-sizing: border-box; background: #eef9ff; overflow-y: auto; }
-        .category-card { background: #fff; border: 6px solid var(--dark-blue); border-radius: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s; font-size: 24px; color: var(--dark-blue); box-shadow: 0 10px 0 #b0c4de; position: relative; overflow: hidden; }
+        #library { display: grid; grid-template-columns: repeat(5, 10fr); gap: 20px; padding: 40px; height: 100vh; box-sizing: border-box; background: #eef9ff; overflow-y: auto; }
+        .category-card { background: #fff; border: 6px solid var(--dark-blue); border-radius: 30px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s; font-size: 24px; color: var(--dark-blue); box-shadow: 0 10px 0 #b0c4de; position: relative; overflow: hidden; height: 180px; }
         .category-card:hover { transform: scale(1.05) translateY(-5px); filter: brightness(1.1); }
-        .category-card span { font-size: 65px; margin-bottom: 10px; z-index: 2; }
-        .category-card b { z-index: 2; text-transform: uppercase; letter-spacing: 1px; }
+        .category-card span { font-size: 65px; margin-bottom: 10px; }
 
         #game-screen { display: none; width: 100vw; height: 100vh; background: linear-gradient(to bottom, #4da6ff, #b3d9ff); flex-direction: column; justify-content: center; align-items: center; position: relative; }
         
-        .cloud { position: absolute; background: #fff; border-radius: 100px; opacity: 0.9; animation: move linear infinite; z-index: 1; pointer-events: none; }
-        .cloud::after, .cloud::before { content: ''; position: absolute; background: #fff; border-radius: 50%; }
-        .cloud::after { width: 100px; height: 100px; top: -50px; left: 30px; }
-        .cloud::before { width: 80px; height: 80px; top: -30px; right: 30px; }
-
         #word-display { display: flex; gap: 20px; z-index: 10; flex-wrap: wrap; justify-content: center; }
-        .tile { width: 130px; height: 170px; background: #fff; border-radius: 25px; display: flex; justify-content: center; align-items: center; font-size: 100px; font-weight: bold; color: var(--dark-blue); border: 5px solid var(--dark-blue); box-shadow: 0 12px 0 #cbdadb; transition: 0.2s; }
-        .active { background: var(--yellow); border-color: #f39c12; animation: breathe 1s infinite alternate; box-shadow: 0 12px 0 #d68910; }
-        .correct { background: var(--green); color: #fff; border-color: #27ae60; box-shadow: 0 12px 0 #1e8449; }
+        .tile { width: 130px; height: 170px; background: #fff; border-radius: 25px; display: flex; justify-content: center; align-items: center; font-size: 100px; font-weight: bold; color: var(--dark-blue); border: 5px solid var(--dark-blue); box-shadow: 0 12px 0 #cbdadb; }
+        .active { background: var(--yellow); border-color: #f39c12; animation: breathe 1s infinite alternate; }
+        .correct { background: var(--green); color: #fff; border-color: #27ae60; }
         .error { background: var(--red) !important; animation: shake 0.3s; color: #fff; }
 
         @keyframes breathe { from { transform: scale(1); } to { transform: scale(1.1); } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
-        @keyframes move { from { left: -300px; } to { left: 110vw; } }
 
-        #prize-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 100; flex-direction: column; justify-content: center; align-items: center; }
-        #prize-img { max-width: 85%; max-height: 80%; border: 15px solid var(--yellow); border-radius: 40px; box-shadow: 0 0 50px rgba(0,0,0,0.2); }
-        .btn-next { margin-top: 30px; padding: 20px 50px; font-size: 30px; background: var(--green); color: #fff; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; box-shadow: 0 8px 0 #219150; }
+        #prize-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; flex-direction: column; justify-content: center; align-items: center; background: #000; }
+        #prize-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; filter: blur(20px) brightness(0.6); transform: scale(1.1); z-index: -1; }
+        #prize-img { max-width: 90%; max-height: 80%; border: 10px solid #fff; border-radius: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.5); z-index: 2; object-fit: contain; }
+        .btn-next { margin-top: 30px; padding: 20px 50px; font-size: 30px; background: var(--green); color: #fff; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; z-index: 10; box-shadow: 0 8px 0 #1e8449; }
 
         #final-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 200; overflow: hidden; }
         .fw { position: absolute; width: 5px; height: 5px; border-radius: 50%; opacity: 0; pointer-events: none; }
         .final-content { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; z-index: 300; width: 100%; }
         .final-text { color: var(--yellow); font-size: 80px; text-align: center; text-shadow: 0 0 20px #ffcc00; margin-bottom: 40px; pointer-events: none; }
-        .final-btn { padding: 20px 40px; font-size: 30px; cursor: pointer; border-radius: 20px; border: none; background: var(--yellow); font-weight: bold; box-shadow: 0 8px 0 #b89600; transition: 0.2s; pointer-events: auto !important; }
-        .final-btn:active { transform: translateY(4px); box-shadow: 0 4px 0 #b89600; }
+        .final-btn { padding: 20px 40px; font-size: 30px; cursor: pointer; border-radius: 20px; border: none; background: var(--yellow); font-weight: bold; box-shadow: 0 8px 0 #b89600; pointer-events: auto !important; }
     </style>
 </head>
 <body>
 
 <div id="library"></div>
-
-<div id="game-screen">
-    <div id="clouds-container"></div>
-    <div id="word-display"></div>
-</div>
+<div id="game-screen"><div id="word-display"></div></div>
 
 <div id="prize-overlay">
+    <div id="prize-bg"></div>
     <img id="prize-img" src="">
-    <button class="btn-next" onclick="nextAction()">НАТИСНИ ПРОБІЛ ➔</button>
+    <button class="btn-next" onclick="nextAction()">ДАЛІ (ПРОБІЛ) ➔</button>
 </div>
 
 <div id="final-screen">
@@ -66,26 +56,9 @@
 
 <script>
 const categories = [
-    { n: "Тварини", e: "🐾", c: "#FFadad", words: ["КІТ"] },
+    { n: "Тварини", e: "🐾", c: "#FFadad", words: ["БІЛКА","ВЕДМІДЬ","ВІВЦЯ","ВІСЛЮК","ВОВК","ГОЛУБ","ГУСАК","ДЕЛЬФІН","ЖАБА","ЖИРАФ","ЗАЯЦЬ","ЗЕБРА","ІГУАНА","ЇЖАК","КОРОВА","КУРКА","ЛЕВ","ЛИСИЦЯ","МАВПА","ПАНДА","ПЕС","ПІВЕНЬ","ПІНГВІН","СЛОН","СОРОКА","ТИГР","УДАВ","ФЛАМІНГО","ХОМ'ЯК","ЧЕРЕПАХА"] },
     { n: "Їжа", e: "🍎", c: "#FFd6a5", words: [] },
-    { n: "Частини тіла", e: "👂", c: "#FDffb6", words: [] },
-    { n: "Кольори", e: "🌈", c: "#CAffbf", words: [] },
-    { n: "Цифри", e: "🔢", c: "#9Bf6ff", words: [] },
-    { n: "Сім'я", e: "👨‍👩‍👦", c: "#A0c4ff", words: [] },
-    { n: "Напої", e: "🥤", c: "#Bdb2ff", words: [] },
-    { n: "Фрукти", e: "🍇", c: "#FfC6ff", words: [] },
-    { n: "Емоції", e: "😊", c: "#FFadad", words: [] },
-    { n: "Дієслова", e: "🏃", c: "#FFd6a5", words: [] },
-    { n: "Якості", e: "✨", c: "#FDffb6", words: [] },
-    { n: "Місця", e: "🌳", c: "#CAffbf", words: [] },
-    { n: "Спорт", e: "⚽", c: "#9Bf6ff", words: [] },
-    { n: "Іграшки", e: "🧸", c: "#A0c4ff", words: [] },
-    { n: "Дім", e: "🏠", c: "#Bdb2ff", words: [] },
-    { n: "Транспорт", e: "🚗", c: "#FfC6ff", words: [] },
-    { n: "Погода", e: "🌤", c: "#FFadad", words: [] },
-    { n: "Одяг", e: "👗", c: "#FFd6a5", words: [] },
-    { n: "Час", e: "⏳", c: "#FDffb6", words: [] },
-    { n: "Різне", e: "🌀", c: "#CAffbf", words: [] }
+    { n: "Сім'я", e: "👨‍👩‍👦", c: "#A0c4ff", words: [] }
 ];
 
 let currentWords = [], wordIdx = 0, charIdx = 0, isPrize = false;
@@ -100,22 +73,18 @@ function init() {
         div.onclick = () => { if(cat.words.length) startBlock(cat.words); };
         lib.appendChild(div);
     });
-    createClouds();
 }
 
-function createClouds() {
-    const container = document.getElementById('clouds-container');
-    for(let i=0; i<6; i++) {
-        const cloud = document.createElement('div');
-        cloud.className = 'cloud';
-        const w = 150 + Math.random() * 150;
-        cloud.style.width = w + 'px';
-        cloud.style.height = (w/2.5) + 'px';
-        cloud.style.top = (Math.random() * 70) + '%';
-        cloud.style.animationDuration = (20 + Math.random() * 30) + 's';
-        cloud.style.animationDelay = -(Math.random() * 20) + 's';
-        container.appendChild(cloud);
-    }
+function playSnd(name) {
+    const audio = new Audio();
+    const cleanName = encodeURIComponent(name.toUpperCase());
+    // Спроба 1: завантажити як є (якщо розширення вже в імені)
+    audio.src = cleanName;
+    audio.onerror = () => {
+        // Спроба 2: додати .mp3, якщо перша спроба не вдалася
+        audio.src = cleanName + '.mp3';
+    };
+    audio.play().catch(e => console.log("Sound error:", name));
 }
 
 function startBlock(words) {
@@ -126,15 +95,8 @@ function startBlock(words) {
     nextWord();
 }
 
-function playSnd(file) { 
-    new Audio(encodeURIComponent(file.toUpperCase()) + '.mp3').play().catch(() => {});
-}
-
 function nextWord() {
-    if (wordIdx >= currentWords.length) {
-        showFinal();
-        return;
-    }
+    if (wordIdx >= currentWords.length) { showFinal(); return; }
     charIdx = 0; isPrize = false;
     render();
     setTimeout(() => playSnd(currentWords[wordIdx]), 600);
@@ -154,7 +116,7 @@ function render() {
 }
 
 window.onkeydown = (e) => {
-    if (isPrize && e.code === 'Space') { nextAction(); return; }
+    if (isPrize && (e.code === 'Space' || e.code === 'Enter')) { nextAction(); return; }
     if (document.getElementById('game-screen').style.display === 'flex' && !isPrize) {
         const key = e.key.toUpperCase();
         const target = currentWords[wordIdx][charIdx];
@@ -167,21 +129,20 @@ window.onkeydown = (e) => {
             } else render();
         } else if (!['Shift','Control','Alt'].includes(e.key)) {
             const active = document.querySelector('.active');
-            if(active) {
-                active.classList.add('error');
-                setTimeout(() => active.classList.remove('error'), 400);
-            }
+            if(active) { active.classList.add('error'); setTimeout(() => active.classList.remove('error'), 400); }
         }
     }
 };
 
 function showPrize() {
     const word = currentWords[wordIdx];
-    document.getElementById('prize-img').src = encodeURIComponent(word.toUpperCase()) + '.jpg';
+    const imgUrl = encodeURIComponent(word.toUpperCase()) + '.jpg';
+    document.getElementById('prize-img').src = imgUrl;
+    document.getElementById('prize-bg').style.backgroundImage = `url('${imgUrl}')`;
     setTimeout(() => {
         isPrize = true;
         document.getElementById('prize-overlay').style.display = 'flex';
-    }, 1500);
+    }, 1200);
 }
 
 function nextAction() {
