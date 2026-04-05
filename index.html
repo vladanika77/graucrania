@@ -32,7 +32,7 @@
 
         #game-screen { display: none; width: 100vw; height: 100vh; background: var(--blue); position: relative; flex-direction: column; justify-content: center; align-items: center; }
         #word-display { display: flex; gap: 15px; z-index: 10; flex-wrap: wrap; justify-content: center; }
-        .tile { width: 130px; height: 170px; background: var(--sand); border-radius: 25px; display: flex; justify-content: center; align-items: center; font-size: 100px; font-weight: bold; color: var(--dark-blue); border: 5px solid var(--dark-blue); box-shadow: 0 10px 0 #cbdadb; }
+        .tile { width: 130px; height: 170px; background: var(--sand); border-radius: 25px; display: flex; justify-content: center; align-items: center; font-size: 100px; font-weight: bold; color: var(--dark-blue); border: 5px solid var(--dark-blue); box-shadow: 0 10px 0 #cbdadb; text-transform: uppercase; }
         
         .active { background: var(--yellow); border-color: #f39c12; animation: breathe 1s infinite alternate; }
         .game-paused .active { animation-play-state: paused; }
@@ -49,7 +49,6 @@
         #prize-img { max-width: 90%; max-height: 75%; border: 10px solid #fff; border-radius: 20px; z-index: 5; object-fit: contain; }
         .btn-next { margin-top: 25px; padding: 25px 50px; font-size: 32px; background: var(--green); color: #fff; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; display: none; }
 
-        /* Фейерверк */
         #final-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 500; overflow: hidden; flex-direction: column; justify-content: center; align-items: center; }
         .fw { position: absolute; border-radius: 50%; opacity: 0; pointer-events: none; }
         .final-text { color: var(--yellow); font-size: 100px; text-align: center; text-shadow: 0 0 30px #ffcc00; margin-bottom: 60px; z-index: 600; font-weight: bold; }
@@ -82,16 +81,25 @@
 <script>
 const categories = [
     { n: "Тварини", e: "🐾", c: "#FFadad", words: ["БІЛКА","ВЕДМІДЬ","ВІВЦЯ","ВІСЛЮК","ВОВК","ГОЛУБ","ГУСАК","ДЕЛЬФІН","ЖАБА","ЖИРАФ","ЗАЯЦЬ","ЗЕБРА","ІГУАНА","ЇЖАК","КОРОВА","КУРКА","ЛЕВ","ЛИСИЦЯ","МАВПА","ПАНДА","ПЕС","ПІВЕНЬ","ПІНГВІН","СЛОН","СОРОКА","ТИГР","УДАВ","ФЛАМІНГО","ЧЕРЕПАХА"] },
-    { n: "Їжа", e: "🍎", c: "#FFd6a5", words: [] }, { n: "Частини тіла", e: "👂", c: "#FDffb6", words: [] },
-    { n: "Кольори", e: "🌈", c: "#CAffbf", words: [] }, { n: "Цифри", e: "🔢", c: "#9Bf6ff", words: [] },
-    { n: "Сім'я", e: "👨‍👩‍👦", c: "#A0c4ff", words: [] }, { n: "Напої", e: "🥤", c: "#Bdb2ff", words: [] },
-    { n: "Фрукти/Овочі", e: "🍇", c: "#FfC6ff", words: [] }, { n: "Емоції", e: "😊", c: "#FFadad", words: [] },
-    { n: "Дієслова", e: "🏃", c: "#FFd6a5", words: [] }, { n: "Прикметники", e: "✨", c: "#FDffb6", words: [] },
-    { n: "Місця", e: "🌳", c: "#CAffbf", words: [] }, { n: "Спорт", e: "⚽", c: "#9Bf6ff", words: [] },
-    { n: "Іграшки", e: "🧸", c: "#A0c4ff", words: [] }, { n: "Дім", e: "🏠", c: "#Bdb2ff", words: [] },
-    { n: "Транспорт", e: "🚗", c: "#FfC6ff", words: [] }, { n: "Погода", e: "🌤", c: "#FFadad", words: [] },
-    { n: "Одяг", e: "👗", c: "#FFd6a5", words: [] }, { n: "Час", e: "📅", c: "#FDffb6", words: [] },
-    { n: "Різне", e: "🌀", c: "#CAffbf", words: [] }
+    { n: "Їжа", e: "🍎", c: "#FFd6a5", words: ["ХЛІБ","СУП","КАША","М’ЯСО","РИБА","ЯЙЦЕ","СИР","МАКАРОНИ","ПІЦА","ПЕЧИВО","ЦУКЕРКА","МОРОЗИВО"] },
+    { n: "Частини тіла", e: "👂", c: "#FDffb6", words: ["ГОЛОВА","РУКА","НОГА","ОКО","НІС","РОТ","ВУХО","ЖИВІТ","СПИНА","ПАЛЕЦЬ","ВОЛОССЯ","ЗУБИ"] },
+    { n: "Кольори", e: "🌈", c: "#CAffbf", words: ["ЧЕРВОНИЙ","СИНІЙ","ЖОВТИЙ","ЗЕЛЕНИЙ","БІЛИЙ","ЧОРНИЙ","РОЖЕВИЙ","ПОМАРАНЧЕВИЙ","ФІОЛЕТОВИЙ","КОРИЧНЕВИЙ"] },
+    { n: "Цифри", e: "🔢", c: "#9Bf6ff", words: ["ОДИН","ДВА","ТРИ","ЧОТИРИ","П’ЯТЬ","ШІСТЬ","СІМ","ВІСІМ","ДЕВ’ЯТЬ","ДЕСЯТЬ"] },
+    { n: "Сім'я", e: "👨‍👩‍👦", c: "#A0c4ff", words: ["МАМА","ТАТО","АНДРІЙ","БАБУСЯ","ДІДУСЬ","БРАТ","СЕСТРА"] },
+    { n: "Напої", e: "🥤", c: "#Bdb2ff", words: ["ВОДА","СІК","ЧАЙ","МОЛОКО","КАКАО","КОМПОТ"] },
+    { n: "Фрукти/Овочі", e: "🍇", c: "#FfC6ff", words: ["ЯБЛУКО","БАНАН","ГРУША","ВИНОГРАД","ПОЛУНИЦЯ","ОГІРОК","ПОМІДОР","КАРТОПЛЯ","МОРКВА","КАПУСТА"] },
+    { n: "Емоції", e: "😊", c: "#FFadad", words: ["РАДІСТЬ","СУМ","ЗЛІСТЬ","СТРАХ","ЛЮБОВ","СМІХ","ПОЦІЛУНОК","ОБІЙМИ"] },
+    { n: "Дієслова", e: "🏃", c: "#FFd6a5", words: ["БІГАТИ","СТРИБАТИ","ЇСТИ","ПИТИ","СПАТИ","ГРАТИ","МАЛЮВАТИ","ТАНЦЮВАТИ","МИТИ","ОДЯГАТИ","ПЛАВАТИ","ЗНІМАТИ","РАХУВАТИ","ПИСАТИ"] },
+    { n: "Прикметники", e: "✨", c: "#FDffb6", words: ["ВЕЛИКИЙ","МАЛИЙ","ГАРНИЙ","ДОБРИЙ","ЗЛИЙ","ГАРЯЧИЙ","ХОЛОДНИЙ","МОКРИЙ","СУХИЙ","ШВИДКИЙ","ПОВІЛЬНИЙ","М’ЯКИЙ","ТВЕРДИЙ"] },
+    { n: "Місця", e: "🌳", c: "#CAffbf", words: ["ДІМ","ШКОЛА","САДОЧОК","МАГАЗИН","ПАРК","ЛІС","МОРЕ","ВУЛИЦЯ","МАЙДАНЧИК","БАСЕЙН","ПЛЯЖ","КІНО"] },
+    { n: "Спорт", e: "⚽", c: "#9Bf6ff", words: ["М’ЯЧ","ФУТБОЛ","БІГ","ВЕЛОСИПЕД","САМОКАТ","РОЛИКИ","БАТУТ","ТЕНІС","ПЛАВАННЯ"] },
+    { n: "Іграшки", e: "🧸", c: "#A0c4ff", words: ["ЛЯЛЬКА","МАШИНКА","КУБИКИ","КОНСТРУКТОР","ПАЗЛИ","ВЕДМЕДИК","РОБОТ","ЛЕГО","ТРАКТОР","КНИЖКА"] },
+    { n: "Дім", e: "🏠", c: "#Bdb2ff", words: ["ЛІЖКО","СТІЛ","СТІЛЬЧИК","ШАФА","ВІКНО","ДВЕРІ","ТЕЛЕВІЗОР","ХОЛОДИЛЬНИК","ДЗЕРКАЛО","ЛОЖКА","ВИЛКА","ЧАШКА"] },
+    { n: "Транспорт", e: "🚗", c: "#FfC6ff", words: ["МАШИНА","АВТОБУС","ПОТЯГ","ЛІТАК","КОРАБЕЛЬ","ТРАМВАЙ","ТАКСІ","ВАНТАЖІВКА","ШВИДКА","ПОЖЕЖНА"] },
+    { n: "Погода", e: "🌤", c: "#FFadad", words: ["СОНЦЕ","ДОЩ","СНІГ","ХМАРА","ВІТЕР","НЕБО","ГРІМ"] },
+    { n: "Одяг", e: "👗", c: "#FFd6a5", words: ["ФУТБОЛКА","ШТАНИ","ШОРТИ","СУКНЯ","КУРКТА","ШАПКА","ШКАРПЕТКИ","ВЗУТТЯ","МАЙКА","ПАМПЕРС"] },
+    { n: "Час", e: "📅", c: "#FDffb6", words: ["РАНОК","ДЕНЬ","ВЕЧІР","НІЧ"] },
+    { n: "Різне", e: "🌀", c: "#CAffbf", words: ["МУЛЬТИКИ","ТАК","НІ","СТОП","ЩЕ","ДОПОМОЖИ","ДЯКУЮ","ТЕЛЕФОН"] }
 ];
 
 let currentWords = [], wordIdx = 0, charIdx = 0, isPrize = false, isPaused = false;
@@ -123,7 +131,7 @@ function init() {
 
 function playSnd(name) {
     if (isPaused) return;
-    const fileName = name.toUpperCase();
+    const fileName = name.toUpperCase().replace('’', ''); // Убираем апостроф из имени файла если нужно
     const audio = new Audio(fileName + '.m4a');
     audio.volume = volVoice.value;
     audio.play().catch(() => {
@@ -161,7 +169,10 @@ window.onkeydown = (e) => {
     if (isPaused) return;
     if (isPrize && (e.code === 'Space' || e.code === 'Enter')) { nextAction(); return; }
     if (document.getElementById('game-screen').style.display === 'flex' && !isPrize) {
-        const key = e.key.toUpperCase();
+        let key = e.key.toUpperCase();
+        // Поддержка апострофа
+        if (e.code === 'Quote') key = '’'; 
+        
         const target = currentWords[wordIdx][charIdx];
         if (key === target) {
             charIdx++; render();
@@ -178,7 +189,7 @@ window.onkeydown = (e) => {
 
 function showPrize() {
     const word = currentWords[wordIdx];
-    const imgFile = word.toUpperCase() + '.jpg';
+    const imgFile = word.toUpperCase().replace('’', '') + '.jpg';
     document.getElementById('btn-space').style.display = 'none';
     document.getElementById('prize-img').src = imgFile;
     document.getElementById('prize-bg').style.backgroundImage = `url('${imgFile}')`;
