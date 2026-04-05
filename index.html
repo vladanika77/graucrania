@@ -60,7 +60,7 @@
 <div id="controls-panel">
     <div class="ctrl-row">🎵 <input type="range" id="volume-music" min="0" max="1" step="0.1" value="0.2"></div>
     <div class="ctrl-row">🗣️ <input type="range" id="volume-voice" min="0" max="1" step="0.1" value="1"></div>
-    <button id="btn-pause" onclick="togglePause()">ПАУЗА</button>
+    <button id="btn-pause">ПАУЗА</button>
 </div>
 
 <div id="library"></div>
@@ -70,7 +70,7 @@
     <div id="prize-bg"></div>
     <div id="prize-title"></div>
     <img id="prize-img" src="">
-    <button id="btn-space" class="btn-next" onclick="nextAction()">ПРОБІЛ - далі ➔</button>
+    <button id="btn-space" class="btn-next">ПРОБІЛ - далі ➔</button>
 </div>
 
 <div id="final-screen">
@@ -107,15 +107,29 @@ const bgMusic = new Audio('bg_music.mp3'); bgMusic.loop = true;
 
 const volMusic = document.getElementById('volume-music');
 const volVoice = document.getElementById('volume-voice');
+const btnPause = document.getElementById('btn-pause');
+const btnSpace = document.getElementById('btn-space');
+
 volMusic.oninput = (e) => bgMusic.volume = e.target.value;
 
 function togglePause() {
     isPaused = !isPaused;
-    const btn = document.getElementById('btn-pause');
     const screen = document.getElementById('game-screen');
-    if (isPaused) { bgMusic.pause(); btn.innerText = "ГРАТИ"; btn.classList.add('paused'); screen.classList.add('game-paused'); }
-    else { if(screen.style.display === 'flex') bgMusic.play(); btn.innerText = "ПАУЗА"; btn.classList.remove('paused'); screen.classList.remove('game-paused'); }
+    if (isPaused) { 
+        bgMusic.pause(); 
+        btnPause.innerText = "ГРАТИ"; 
+        btnPause.classList.add('paused'); 
+        screen.classList.add('game-paused'); 
+    } else { 
+        if(screen.style.display === 'flex') bgMusic.play(); 
+        btnPause.innerText = "ПАУЗА"; 
+        btnPause.classList.remove('paused'); 
+        screen.classList.remove('game-paused'); 
+    }
 }
+
+btnPause.addEventListener('click', togglePause);
+btnSpace.addEventListener('click', nextAction);
 
 function init() {
     const lib = document.getElementById('library'); lib.innerHTML = '';
@@ -189,9 +203,39 @@ window.onkeydown = (e) => {
 function showPrize() {
     const word = currentWords[wordIdx];
     const imgFile = word.toUpperCase().replace('’', '').replace(/ /g, '') + '.jpg';
-    document.getElementById('btn-space').style.display = 'none';
+    btnSpace.style.display = 'none';
     document.getElementById('prize-img').src = imgFile;
     document.getElementById('prize-bg').style.backgroundImage = `url('${imgFile}')`;
     document.getElementById('prize-title').innerText = word;
     isPrize = true; document.getElementById('prize-overlay').style.display = 'flex';
-    setTimeout(() => { if(isPri
+    setTimeout(() => { if(isPrize) btnSpace.style.display = 'block'; }, 1500);
+}
+
+function nextAction() {
+    document.getElementById('prize-overlay').style.display = 'none';
+    wordIdx++;
+    if (wordIdx >= currentWords.length) { showFinal(); } else { nextWord(); }
+}
+
+function showFinal() {
+    document.getElementById('final-screen').style.display = 'flex';
+    setInterval(createFirework, 300);
+}
+
+function createFirework() {
+    const f = document.createElement('div'); f.className = 'fw';
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * window.innerHeight;
+    const size = 200 + Math.random() * 300; 
+    const color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+    f.style.left = x + 'px'; f.style.top = y + 'px';
+    f.style.boxShadow = `0 0 ${size}px ${size/2}px ${color}`;
+    document.getElementById('final-screen').appendChild(f);
+    f.animate([{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: `scale(25)` }], 1200);
+    setTimeout(() => f.remove(), 1200);
+}
+
+init();
+</script>
+</body>
+</html>
