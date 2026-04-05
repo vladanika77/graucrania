@@ -10,7 +10,14 @@
         }
         body { margin: 0; font-family: 'Arial Rounded MT Bold', sans-serif; overflow: hidden; background: #eef9ff; }
         
-        /* Бібліотека */
+        /* Панель керування звуком */
+        #audio-controls {
+            position: fixed; top: 10px; right: 20px; z-index: 1000;
+            background: rgba(255,255,255,0.7); padding: 10px; border-radius: 15px;
+            display: flex; align-items: center; gap: 10px; border: 2px solid var(--dark-blue);
+        }
+        #volume-slider { cursor: pointer; width: 100px; }
+
         #library { 
             display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; 
             padding: 30px; height: 100vh; box-sizing: border-box; overflow-y: auto; 
@@ -25,7 +32,6 @@
         .category-card span { font-size: 50px; margin-bottom: 10px; }
         .locked { opacity: 0.4; cursor: default; filter: grayscale(0.5); }
 
-        /* Екран гри */
         #game-screen { 
             display: none; width: 100vw; height: 100vh; 
             background: var(--blue); position: relative; 
@@ -45,7 +51,6 @@
         @keyframes breathe { from { transform: scale(1); } to { transform: scale(1.1); } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
 
-        /* Приз */
         #prize-overlay { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             z-index: 100; flex-direction: column; justify-content: center; align-items: center; background: #000; 
@@ -57,6 +62,11 @@
     </style>
 </head>
 <body>
+
+<div id="audio-controls">
+    <span style="font-size: 20px;">🎵</span>
+    <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.2">
+</div>
 
 <div id="library"></div>
 <div id="game-screen"></div>
@@ -93,6 +103,13 @@ const categories = [
 ];
 
 let currentWords = [], wordIdx = 0, charIdx = 0, isPrize = false;
+const bgMusic = new Audio('bg_music.mp3');
+bgMusic.loop = true;
+
+const volumeSlider = document.getElementById('volume-slider');
+volumeSlider.addEventListener('input', (e) => {
+    bgMusic.volume = e.target.value;
+});
 
 function init() {
     const lib = document.getElementById('library');
@@ -102,7 +119,12 @@ function init() {
         div.className = 'category-card' + (cat.words.length ? '' : ' locked');
         div.style.backgroundColor = cat.c;
         div.innerHTML = `<span>${cat.e}</span>${cat.n}`;
-        div.onclick = () => { if(cat.words.length) startBlock(cat.words); };
+        div.onclick = () => { 
+            if(cat.words.length) {
+                bgMusic.play().catch(() => {});
+                startBlock(cat.words); 
+            }
+        };
         lib.appendChild(div);
     });
 }
@@ -126,9 +148,7 @@ function nextWord() {
     if (wordIdx >= currentWords.length) { location.reload(); return; }
     charIdx = 0; isPrize = false;
     render();
-    // Озвучуємо слово при старті
     setTimeout(() => playSnd(currentWords[wordIdx]), 300);
-    // Озвучуємо ПЕРШУ літеру
     setTimeout(() => playSnd(currentWords[wordIdx][0]), 1500);
 }
 
@@ -156,21 +176,15 @@ window.onkeydown = (e) => {
         if (key === target) {
             charIdx++;
             render();
-            
             if (charIdx === currentWords[wordIdx].length) {
-                // Слово зібрано: звучить фінальне слово
                 setTimeout(() => playSnd(currentWords[wordIdx]), 500);
                 setTimeout(showPrize, 2000);
             } else {
-                // Тільки ОДИН звук наступної літери при появі
                 setTimeout(() => playSnd(currentWords[wordIdx][charIdx]), 400);
             }
         } else if (!['Shift','Alt','Control','CapsLock'].includes(e.key)) {
             const active = document.querySelector('.active');
-            if(active) { 
-                active.classList.add('error'); 
-                setTimeout(() => active.classList.remove('error'), 400); 
-            }
+            if(active) { active.classList.add('error'); setTimeout(() => active.classList.remove('error'), 400); }
         }
     }
 };
@@ -178,16 +192,26 @@ window.onkeydown = (e) => {
 function showPrize() {
     const word = currentWords[wordIdx];
     const imgFile = word.toUpperCase() + '.jpg';
+    
+    // ГАРАНТОВАНО ховаємо кнопку перед показом призу
+    document.getElementById('btn-space').style.display = 'none';
+    
     document.getElementById('prize-img').src = imgFile;
     document.getElementById('prize-bg').style.backgroundImage = `url('${imgFile}')`;
     document.getElementById('prize-title').innerText = word;
+    
     isPrize = true;
     document.getElementById('prize-overlay').style.display = 'flex';
-    setTimeout(() => { document.getElementById('btn-space').style.display = 'block'; }, 1000);
+    
+    // Кнопка з'явиться ТІЛЬКИ через секунду ПІСЛЯ того, як екран призу вже відкритий
+    setTimeout(() => { 
+        if(isPrize) document.getElementById('btn-space').style.display = 'block'; 
+    }, 1500);
 }
 
 function nextAction() {
     document.getElementById('prize-overlay').style.display = 'none';
+    document.getElementById('btn-space').style.display = 'none';
     wordIdx++;
     nextWord();
 }
