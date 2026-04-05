@@ -4,58 +4,110 @@
     <meta charset="UTF-8">
     <title>Гра для Андрія</title>
     <style>
-        :root { --blue: #4da6ff; --dark-blue: #004d99; --yellow: #ffcc00; --red: #ff4d4d; --green: #2ecc71; --sand: #f0e4d0; }
+        :root { 
+            --blue: #4da6ff; --dark-blue: #004d99; --yellow: #ffcc00; 
+            --red: #ff4d4d; --green: #2ecc71; --sand: #f0e4d0; 
+        }
         body { margin: 0; font-family: 'Arial Rounded MT Bold', sans-serif; overflow: hidden; background: #eef9ff; }
-        #library { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; padding: 30px; height: 100vh; box-sizing: border-box; overflow-y: auto; }
-        .category-card { border-radius: 25px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s; font-size: 22px; color: var(--dark-blue); border: 5px solid var(--dark-blue); box-shadow: 0 8px 0 rgba(0,0,0,0.1); height: 160px; text-align: center; font-weight: bold; }
+        
+        /* Бібліотека */
+        #library { 
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; 
+            padding: 30px; height: 100vh; box-sizing: border-box; overflow-y: auto; 
+        }
+        .category-card { 
+            border-radius: 25px; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; cursor: pointer; 
+            transition: 0.3s; font-size: 22px; color: var(--dark-blue); 
+            border: 5px solid var(--dark-blue); box-shadow: 0 8px 0 rgba(0,0,0,0.1);
+            height: 160px; text-align: center; font-weight: bold;
+        }
         .category-card span { font-size: 50px; margin-bottom: 10px; }
         .locked { opacity: 0.4; cursor: default; filter: grayscale(0.5); }
-        #game-screen { display: none; width: 100vw; height: 100vh; background: var(--blue); position: relative; flex-direction: column; justify-content: center; align-items: center; }
+
+        /* Екран гри */
+        #game-screen { 
+            display: none; width: 100vw; height: 100vh; 
+            background: var(--blue); position: relative; 
+            flex-direction: column; justify-content: center; align-items: center; 
+        }
         #word-display { display: flex; gap: 15px; z-index: 10; flex-wrap: wrap; justify-content: center; }
-        .tile { width: 130px; height: 170px; background: var(--sand); border-radius: 25px; display: flex; justify-content: center; align-items: center; font-size: 100px; font-weight: bold; color: var(--dark-blue); border: 5px solid var(--dark-blue); box-shadow: 0 10px 0 #cbdadb; }
+        .tile { 
+            width: 130px; height: 170px; background: var(--sand); border-radius: 25px; 
+            display: flex; justify-content: center; align-items: center; 
+            font-size: 100px; font-weight: bold; color: var(--dark-blue); 
+            border: 5px solid var(--dark-blue); box-shadow: 0 10px 0 #cbdadb; 
+        }
         .active { background: var(--yellow); border-color: #f39c12; animation: breathe 1s infinite alternate; }
         .correct { background: var(--green); color: #fff; border-color: #27ae60; }
         .error { background: var(--red) !important; animation: shake 0.3s; color: #fff; }
+
         @keyframes breathe { from { transform: scale(1); } to { transform: scale(1.1); } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
-        #prize-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; flex-direction: column; justify-content: center; align-items: center; background: #000; }
+
+        /* Приз */
+        #prize-overlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 100; flex-direction: column; justify-content: center; align-items: center; background: #000; 
+        }
         #prize-bg { position: absolute; width: 100%; height: 100%; background-size: cover; background-position: center; filter: blur(35px) brightness(0.5); z-index: -1; }
         #prize-title { position: absolute; top: 40px; color: #fff; font-size: 60px; text-transform: uppercase; z-index: 10; }
         #prize-img { max-width: 90%; max-height: 75%; border: 10px solid #fff; border-radius: 20px; z-index: 5; object-fit: contain; }
-        .btn-next { margin-top: 25px; padding: 20px 40px; font-size: 28px; background: var(--green); color: #fff; border: none; border-radius: 20px; cursor: pointer; display: none; }
+        .btn-next { margin-top: 25px; padding: 25px 50px; font-size: 32px; background: var(--green); color: #fff; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; display: none; }
     </style>
 </head>
 <body>
+
 <div id="library"></div>
 <div id="game-screen"></div>
+
 <div id="prize-overlay">
     <div id="prize-bg"></div>
     <div id="prize-title"></div>
     <img id="prize-img" src="">
-    <button id="btn-space" class="btn-next" onclick="nextAction()">ПРОБІЛ - далі</button>
+    <button id="btn-space" class="btn-next" onclick="nextAction()">ПРОБІЛ - далі ➔</button>
 </div>
 
 <script>
 const categories = [
-    { n: "Тварини", e: "🐾", c: "#FFadad", words: ["БІЛКА","ВЕДМІДЬ","ВІВЦЯ","ВІСЛЮК","ВОВК","ГОЛУБ","ГУСАК","ДЕЛЬФІН","ЖАБА","ЖИРАФ","ЗАЯЦЬ","ЗЕБРА","ІГУАНА","ЇЖАК","КОРОВА","КУРКА","ЛЕВ","ЛИСИЦЯ","МАВПА","ПАНДА","ПЕС","ПІВЕНЬ","ПІНГВІН","СЛОН","СОРОКА","ТИГР","УДАВ","ФЛАМІНГО","ЧЕРЕПАХА"] }
+    { n: "Тварини", e: "🐾", c: "#FFadad", words: ["БІЛКА","ВЕДМІДЬ","ВІВЦЯ","ВІСЛЮК","ВОВК","ГОЛУБ","ГУСАК","ДЕЛЬФІН","ЖАБА","ЖИРАФ","ЗАЯЦЬ","ЗЕБРА","ІГУАНА","ЇЖАК","КОРОВА","КУРКА","ЛЕВ","ЛИСИЦЯ","МАВПА","ПАНДА","ПЕС","ПІВЕНЬ","ПІНГВІН","СЛОН","СОРОКА","ТИГР","УДАВ","ФЛАМІНГО","ЧЕРЕПАХА"] },
+    { n: "Їжа", e: "🍎", c: "#FFd6a5", words: [] },
+    { n: "Частини тіла", e: "👂", c: "#FDffb6", words: [] },
+    { n: "Кольори", e: "🌈", c: "#CAffbf", words: [] },
+    { n: "Цифри", e: "🔢", c: "#9Bf6ff", words: [] },
+    { n: "Сім'я", e: "👨‍👩‍👦", c: "#A0c4ff", words: [] },
+    { n: "Напої", e: "🥤", c: "#Bdb2ff", words: [] },
+    { n: "Фрукти/Овочі", e: "🍇", c: "#FfC6ff", words: [] },
+    { n: "Емоції", e: "😊", c: "#FFadad", words: [] },
+    { n: "Дієслова", e: "🏃", c: "#FFd6a5", words: [] },
+    { n: "Прикметники", e: "✨", c: "#FDffb6", words: [] },
+    { n: "Місця", e: "🌳", c: "#CAffbf", words: [] },
+    { n: "Спорт", e: "⚽", c: "#9Bf6ff", words: [] },
+    { n: "Іграшки", e: "🧸", c: "#A0c4ff", words: [] },
+    { n: "Дім", e: "🏠", c: "#Bdb2ff", words: [] },
+    { n: "Транспорт", e: "🚗", c: "#FfC6ff", words: [] },
+    { n: "Погода", e: "🌤", c: "#FFadad", words: [] },
+    { n: "Одяг", e: "👗", c: "#FFd6a5", words: [] },
+    { n: "Час", e: "📅", c: "#FDffb6", words: [] },
+    { n: "Різне", e: "🌀", c: "#CAffbf", words: [] }
 ];
 
 let currentWords = [], wordIdx = 0, charIdx = 0, isPrize = false;
 
 function init() {
     const lib = document.getElementById('library');
+    lib.innerHTML = '';
     categories.forEach(cat => {
         const div = document.createElement('div');
-        div.className = 'category-card';
+        div.className = 'category-card' + (cat.words.length ? '' : ' locked');
         div.style.backgroundColor = cat.c;
         div.innerHTML = `<span>${cat.e}</span>${cat.n}`;
-        div.onclick = () => startBlock(cat.words);
+        div.onclick = () => { if(cat.words.length) startBlock(cat.words); };
         lib.appendChild(div);
     });
 }
 
 function playSnd(name) {
-    // Використовуємо прямий шлях без кодування, як ти просила
     const audio = new Audio(name.toUpperCase() + '.m4a');
     audio.play().catch(() => {
         new Audio(name.toUpperCase() + '.mp3').play().catch(() => {});
@@ -74,16 +126,16 @@ function nextWord() {
     if (wordIdx >= currentWords.length) { location.reload(); return; }
     charIdx = 0; isPrize = false;
     render();
-    // Озвучуємо ціле слово при старті
+    // Озвучуємо слово при старті
     setTimeout(() => playSnd(currentWords[wordIdx]), 300);
-    // Озвучуємо ПЕРШУ літеру через невелику паузу після слова
+    // Озвучуємо ПЕРШУ літеру
     setTimeout(() => playSnd(currentWords[wordIdx][0]), 1500);
 }
 
 function render() {
-    const display = document.getElementById('game-screen');
-    display.innerHTML = '<div id="word-display"></div>';
-    const wordWrap = document.getElementById('word-display');
+    const scr = document.getElementById('game-screen');
+    scr.innerHTML = '<div id="word-display"></div>';
+    const display = document.getElementById('word-display');
     
     currentWords[wordIdx].split('').forEach((l, i) => {
         const d = document.createElement('div');
@@ -91,7 +143,7 @@ function render() {
         if (i < charIdx) d.classList.add('correct');
         if (i === charIdx) d.classList.add('active');
         d.innerText = l;
-        wordWrap.appendChild(d);
+        display.appendChild(d);
     });
 }
 
@@ -102,21 +154,23 @@ window.onkeydown = (e) => {
         const target = currentWords[wordIdx][charIdx];
 
         if (key === target) {
-            // ЖОДНОГО ЗВУКУ ПРИ НАТИСКАННІ!
             charIdx++;
             render();
             
             if (charIdx === currentWords[wordIdx].length) {
-                // Слово зібрано: звучить ціле слово
+                // Слово зібрано: звучить фінальне слово
                 setTimeout(() => playSnd(currentWords[wordIdx]), 500);
                 setTimeout(showPrize, 2000);
             } else {
-                // Перехід до наступної літери: звучить ТІЛЬКИ наступна літера
+                // Тільки ОДИН звук наступної літери при появі
                 setTimeout(() => playSnd(currentWords[wordIdx][charIdx]), 400);
             }
         } else if (!['Shift','Alt','Control','CapsLock'].includes(e.key)) {
             const active = document.querySelector('.active');
-            if(active) { active.classList.add('error'); setTimeout(() => active.classList.remove('error'), 400); }
+            if(active) { 
+                active.classList.add('error'); 
+                setTimeout(() => active.classList.remove('error'), 400); 
+            }
         }
     }
 };
