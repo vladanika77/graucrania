@@ -55,7 +55,7 @@
 <div id="controls-panel">
     <div class="ctrl-row">🎵 <input type="range" id="volume-music" min="0" max="1" step="0.1" value="0.2"></div>
     <div class="ctrl-row">🗣️ <input type="range" id="volume-voice" min="0" max="1" step="0.1" value="1"></div>
-    <button id="btn-pause" onclick="togglePause()">ПАУЗА (Ctrl+P)</button>
+    <button id="btn-pause" onclick="togglePause()">ПАУЗА</button>
 </div>
 
 <div id="library"></div>
@@ -132,14 +132,13 @@ function init() {
 
 function playSnd(name) {
     if (isPaused) return;
-    // Використовуємо decodeURIComponent щоб браузер правильно розумів кирилицю
-    const src = decodeURIComponent(name.toUpperCase());
-    const audio = new Audio(src + '.m4a');
+    const fileName = name.toUpperCase();
+    const audio = new Audio(fileName + '.m4a');
     audio.volume = volVoice.value;
     audio.play().catch(() => {
-        const alt = new Audio(src + '.mp3');
+        const alt = new Audio(fileName + '.mp3');
         alt.volume = volVoice.value;
-        alt.play().catch(() => {});
+        alt.play().catch(() => { console.log("Файл не знайдено:", fileName); });
     });
 }
 
@@ -173,15 +172,7 @@ function render() {
 }
 
 window.onkeydown = (e) => {
-    // Пауза ТІЛЬКИ через Ctrl+P або Alt+P, щоб не конфліктувати з літерою "З"
-    if (e.code === 'KeyP' && (e.ctrlKey || e.altKey)) { 
-        e.preventDefault();
-        togglePause(); 
-        return; 
-    }
-    
     if (isPaused) return;
-
     if (isPrize && (e.code === 'Space' || e.code === 'Enter')) { nextAction(); return; }
     if (document.getElementById('game-screen').style.display === 'flex' && !isPrize) {
         const key = e.key.toUpperCase();
