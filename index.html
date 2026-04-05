@@ -9,81 +9,44 @@
             --blue: #4da6ff; --dark-blue: #004d99; --yellow: #ffcc00; 
             --red: #ff4d4d; --green: #2ecc71; --sand: #f0e4d0; 
         }
-        
         body { margin: 0; font-family: 'Arial Rounded MT Bold', sans-serif; overflow: hidden; background: #eef9ff; }
-
-        /* Екран 1: Бібліотека */
-        #library { 
-            display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; 
-            padding: 30px; height: 100vh; box-sizing: border-box; overflow-y: auto; 
-        }
-        .category-card { 
-            border-radius: 25px; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; cursor: pointer; 
-            transition: 0.3s; font-size: 22px; color: var(--dark-blue); 
-            border: 5px solid var(--dark-blue); box-shadow: 0 8px 0 rgba(0,0,0,0.1);
-            height: 160px; text-align: center; font-weight: bold;
-        }
+        #library { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; padding: 30px; height: 100vh; box-sizing: border-box; overflow-y: auto; }
+        .category-card { border-radius: 25px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s; font-size: 22px; color: var(--dark-blue); border: 5px solid var(--dark-blue); box-shadow: 0 8px 0 rgba(0,0,0,0.1); height: 160px; text-align: center; font-weight: bold; }
         .category-card span { font-size: 50px; margin-bottom: 10px; }
         .locked { opacity: 0.4; cursor: default; filter: grayscale(0.5); }
-
-        /* Екран 2: Гра */
-        #game-screen { 
-            display: none; width: 100vw; height: 100vh; 
-            background: var(--blue); position: relative; 
-            flex-direction: column; justify-content: center; align-items: center; 
-        }
-        
+        #game-screen { display: none; width: 100vw; height: 100vh; background: var(--blue); position: relative; flex-direction: column; justify-content: center; align-items: center; }
         .cloud { position: absolute; background: #fff; border-radius: 100px; opacity: 0.8; pointer-events: none; z-index: 1; }
         .cloud::after, .cloud::before { content: ''; position: absolute; background: #fff; border-radius: 50%; }
         .cloud::after { width: 80px; height: 80px; top: -40px; left: 20px; }
         .cloud::before { width: 60px; height: 60px; top: -20px; right: 20px; }
-
         #word-display { display: flex; gap: 15px; z-index: 10; flex-wrap: wrap; justify-content: center; }
-        .tile { 
-            width: 130px; height: 170px; background: var(--sand); border-radius: 25px; 
-            display: flex; justify-content: center; align-items: center; 
-            font-size: 100px; font-weight: bold; color: var(--dark-blue); 
-            border: 5px solid var(--dark-blue); box-shadow: 0 10px 0 #cbdadb; 
-        }
-        
+        .tile { width: 130px; height: 170px; background: var(--sand); border-radius: 25px; display: flex; justify-content: center; align-items: center; font-size: 100px; font-weight: bold; color: var(--dark-blue); border: 5px solid var(--dark-blue); box-shadow: 0 10px 0 #cbdadb; }
         .active { background: var(--yellow); border-color: #f39c12; animation: breathe 1s infinite alternate; }
         .correct { background: var(--green); color: #fff; border-color: #27ae60; transition: 0.3s; }
         .error { background: var(--red) !important; animation: shake 0.3s; color: #fff; }
-
         @keyframes breathe { from { transform: scale(1); } to { transform: scale(1.1); } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
         @keyframes moveClouds { from { left: -300px; } to { left: 110vw; } }
-
-        /* Екран 3: Приз */
-        #prize-overlay { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            z-index: 100; flex-direction: column; justify-content: center; align-items: center; background: #000; 
-        }
+        #prize-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; flex-direction: column; justify-content: center; align-items: center; background: #000; }
         #prize-bg { position: absolute; width: 100%; height: 100%; background-size: cover; background-position: center; filter: blur(35px) brightness(0.5); z-index: -1; }
         #prize-title { position: absolute; top: 40px; color: #fff; font-size: 60px; text-transform: uppercase; letter-spacing: 5px; z-index: 10; text-shadow: 3px 3px 15px #000; }
         #prize-img { max-width: 90%; max-height: 75%; border: 10px solid #fff; border-radius: 20px; z-index: 5; object-fit: contain; visibility: hidden; }
         .btn-next { margin-top: 25px; padding: 25px 50px; font-size: 32px; background: var(--green); color: #fff; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; z-index: 10; box-shadow: 0 8px 0 #1e8449; display: none; }
-
-        /* Фінал */
         #final-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 500; overflow: hidden; flex-direction: column; justify-content: center; align-items: center; }
         .fw { position: absolute; border-radius: 50%; opacity: 0; pointer-events: none; }
         .final-text { color: var(--yellow); font-size: 100px; text-align: center; text-shadow: 0 0 30px #ffcc00; margin-bottom: 60px; z-index: 600; pointer-events: none; font-weight: bold; }
-        .final-btn { padding: 25px 60px; font-size: 35px; background: var(--yellow); border: none; border-radius: 25px; cursor: pointer; font-weight: bold; z-index: 600; box-shadow: 0 10px 0 #b89600; position: relative; }
+        .final-btn { padding: 25px 60px; font-size: 35px; background: var(--yellow); border: none; border-radius: 25px; cursor: pointer; font-weight: bold; z-index: 600; box-shadow: 0 10px 0 #b89600; }
     </style>
 </head>
 <body>
-
 <div id="library"></div>
 <div id="game-screen"></div>
-
 <div id="prize-overlay">
     <div id="prize-bg"></div>
     <div id="prize-title"></div>
     <img id="prize-img" src="" onload="this.style.visibility='visible'">
     <button id="btn-space" class="btn-next" onclick="nextAction()">ПРОБІЛ - наступне слово ➔</button>
 </div>
-
 <div id="final-screen">
     <div class="final-text">ТИ МОЛОДЕЦЬ!</div>
     <button class="final-btn" onclick="location.reload()">В БІБЛІОТЕКУ</button>
@@ -129,11 +92,9 @@ function init() {
 
 function playSnd(name) {
     const baseName = encodeURIComponent(name.toUpperCase());
-    // Граємо ТІЛЬКИ твій формат .m4a. Жодної синтетики.
     const audio = new Audio(baseName + '.m4a');
     audio.play().catch(() => {
-        // Якщо m4a немає (наприклад, для старих файлів), шукаємо mp3
-        new Audio(baseName + '.mp3').play().catch(e => console.log("Sound missing:", name));
+        new Audio(baseName + '.mp3').play().catch(() => {});
     });
 }
 
@@ -191,7 +152,7 @@ window.onkeydown = (e) => {
         const key = e.key.toUpperCase();
         const target = currentWords[wordIdx][charIdx];
         if (key === target) {
-            playSnd(target);
+            // ЗВУК ПРИ НАТИСКАННІ ВИДАЛЕНО, щоб не було накладки
             charIdx++;
             if (charIdx === currentWords[wordIdx].length) {
                 render();
@@ -200,7 +161,8 @@ window.onkeydown = (e) => {
                 setTimeout(showPrize, 2500);
             } else {
                 render();
-                setTimeout(() => playSnd(currentWords[wordIdx][charIdx]), 400);
+                // Озвучуємо лише НАСТУПНУ активну літеру
+                setTimeout(() => playSnd(currentWords[wordIdx][charIdx]), 300);
             }
         } else if (!['Shift','Control','Alt', 'CapsLock'].includes(e.key)) {
             const active = document.querySelector('.active');
