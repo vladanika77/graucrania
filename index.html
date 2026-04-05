@@ -91,10 +91,10 @@ function init() {
 }
 
 function playSnd(name) {
-    const baseName = encodeURIComponent(name.toUpperCase());
-    const audio = new Audio(baseName + '.m4a');
+    // Змінено: використовуємо пряму назву без encodeURIComponent для кирилиці
+    const audio = new Audio(name.toUpperCase() + '.m4a');
     audio.play().catch(() => {
-        new Audio(baseName + '.mp3').play().catch(() => {});
+        new Audio(name.toUpperCase() + '.mp3').play().catch(() => {});
     });
 }
 
@@ -152,7 +152,6 @@ window.onkeydown = (e) => {
         const key = e.key.toUpperCase();
         const target = currentWords[wordIdx][charIdx];
         if (key === target) {
-            // ЗВУК ПРИ НАТИСКАННІ ВИДАЛЕНО, щоб не було накладки
             charIdx++;
             if (charIdx === currentWords[wordIdx].length) {
                 render();
@@ -161,7 +160,7 @@ window.onkeydown = (e) => {
                 setTimeout(showPrize, 2500);
             } else {
                 render();
-                // Озвучуємо лише НАСТУПНУ активну літеру
+                // Звук лише при появі нової плитки
                 setTimeout(() => playSnd(currentWords[wordIdx][charIdx]), 300);
             }
         } else if (!['Shift','Control','Alt', 'CapsLock'].includes(e.key)) {
@@ -173,7 +172,7 @@ window.onkeydown = (e) => {
 
 function showPrize() {
     const word = currentWords[wordIdx];
-    const imgFile = encodeURIComponent(word.toUpperCase()) + '.jpg';
+    const imgFile = word.toUpperCase() + '.jpg';
     const img = document.getElementById('prize-img');
     img.style.visibility = 'hidden';
     img.src = imgFile;
