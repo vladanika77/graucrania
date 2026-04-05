@@ -10,12 +10,10 @@
         }
         body { margin: 0; font-family: 'Arial Rounded MT Bold', sans-serif; overflow: hidden; background: #eef9ff; }
         
-        /* Панель керування */
         #controls-panel {
             position: fixed; top: 10px; right: 20px; z-index: 1000;
             background: rgba(255,255,255,0.9); padding: 12px; border-radius: 20px;
             display: flex; flex-direction: column; gap: 10px; border: 3px solid var(--dark-blue);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .ctrl-row { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--dark-blue); font-weight: bold; }
         #volume-music, #volume-voice { cursor: pointer; width: 80px; }
@@ -30,12 +28,12 @@
         #library { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; padding: 30px; height: 100vh; box-sizing: border-box; overflow-y: auto; }
         .category-card { border-radius: 25px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s; font-size: 22px; color: var(--dark-blue); border: 5px solid var(--dark-blue); box-shadow: 0 8px 0 rgba(0,0,0,0.1); height: 160px; text-align: center; font-weight: bold; }
         .category-card span { font-size: 50px; margin-bottom: 10px; }
+        .locked { opacity: 0.4; cursor: default; filter: grayscale(0.5); }
 
         #game-screen { display: none; width: 100vw; height: 100vh; background: var(--blue); position: relative; flex-direction: column; justify-content: center; align-items: center; }
         #word-display { display: flex; gap: 15px; z-index: 10; flex-wrap: wrap; justify-content: center; }
         .tile { width: 130px; height: 170px; background: var(--sand); border-radius: 25px; display: flex; justify-content: center; align-items: center; font-size: 100px; font-weight: bold; color: var(--dark-blue); border: 5px solid var(--dark-blue); box-shadow: 0 10px 0 #cbdadb; }
         
-        /* Анімація дихання вимикається на паузі */
         .active { background: var(--yellow); border-color: #f39c12; animation: breathe 1s infinite alternate; }
         .game-paused .active { animation-play-state: paused; }
         
@@ -57,7 +55,7 @@
 <div id="controls-panel">
     <div class="ctrl-row">🎵 <input type="range" id="volume-music" min="0" max="1" step="0.1" value="0.2"></div>
     <div class="ctrl-row">🗣️ <input type="range" id="volume-voice" min="0" max="1" step="0.1" value="1"></div>
-    <button id="btn-pause" onclick="togglePause()">ПАУЗА (P)</button>
+    <button id="btn-pause" onclick="togglePause()">ПАУЗА (Ctrl+P)</button>
 </div>
 
 <div id="library"></div>
@@ -72,15 +70,32 @@
 
 <script>
 const categories = [
-    { n: "Тварини", e: "🐾", c: "#FFadad", words: ["БІЛКА","ВЕДМІДЬ","ВІВЦЯ","ВІСЛЮК","ВОВК","ГОЛУБ","ГУСАК","ДЕЛЬФІН","ЖАБА","ЖИРАФ","ЗАЯЦЬ","ЗЕБРА","ІГУАНА","ЇЖАК","КОРОВА","КУРКА","ЛЕВ","ЛИСИЦЯ","МАВПА","ПАНДА","ПЕС","ПІВЕНЬ","ПІНГВІН","СЛОН","СОРОКА","ТИГР","УДАВ","ФЛАМІНГО","ЧЕРЕПАХА"] }
-    // Інші категорії залишаються за замовчуванням
+    { n: "Тварини", e: "🐾", c: "#FFadad", words: ["БІЛКА","ВЕДМІДЬ","ВІВЦЯ","ВІСЛЮК","ВОВК","ГОЛУБ","ГУСАК","ДЕЛЬФІН","ЖАБА","ЖИРАФ","ЗАЯЦЬ","ЗЕБРА","ІГУАНА","ЇЖАК","КОРОВА","КУРКА","ЛЕВ","ЛИСИЦЯ","МАВПА","ПАНДА","ПЕС","ПІВЕНЬ","ПІНГВІН","СЛОН","СОРОКА","ТИГР","УДАВ","ФЛАМІНГО","ЧЕРЕПАХА"] },
+    { n: "Їжа", e: "🍎", c: "#FFd6a5", words: [] },
+    { n: "Частини тіла", e: "👂", c: "#FDffb6", words: [] },
+    { n: "Кольори", e: "🌈", c: "#CAffbf", words: [] },
+    { n: "Цифри", e: "🔢", c: "#9Bf6ff", words: [] },
+    { n: "Сім'я", e: "👨‍👩‍👦", c: "#A0c4ff", words: [] },
+    { n: "Напої", e: "🥤", c: "#Bdb2ff", words: [] },
+    { n: "Фрукти/Овочі", e: "🍇", c: "#FfC6ff", words: [] },
+    { n: "Емоції", e: "😊", c: "#FFadad", words: [] },
+    { n: "Дієслова", e: "🏃", c: "#FFd6a5", words: [] },
+    { n: "Прикметники", e: "✨", c: "#FDffb6", words: [] },
+    { n: "Місця", e: "🌳", c: "#CAffbf", words: [] },
+    { n: "Спорт", e: "⚽", c: "#9Bf6ff", words: [] },
+    { n: "Іграшки", e: "🧸", c: "#A0c4ff", words: [] },
+    { n: "Дім", e: "🏠", c: "#Bdb2ff", words: [] },
+    { n: "Транспорт", e: "🚗", c: "#FfC6ff", words: [] },
+    { n: "Погода", e: "🌤", c: "#FFadad", words: [] },
+    { n: "Одяг", e: "👗", c: "#FFd6a5", words: [] },
+    { n: "Час", e: "📅", c: "#FDffb6", words: [] },
+    { n: "Різне", e: "🌀", c: "#CAffbf", words: [] }
 ];
 
 let currentWords = [], wordIdx = 0, charIdx = 0, isPrize = false, isPaused = false;
 const bgMusic = new Audio('bg_music.mp3');
 bgMusic.loop = true;
 
-// Гучність
 const volMusic = document.getElementById('volume-music');
 const volVoice = document.getElementById('volume-voice');
 volMusic.oninput = (e) => bgMusic.volume = e.target.value;
@@ -89,15 +104,14 @@ function togglePause() {
     isPaused = !isPaused;
     const btn = document.getElementById('btn-pause');
     const screen = document.getElementById('game-screen');
-    
     if (isPaused) {
         bgMusic.pause();
-        btn.innerText = "ГРАТИ (P)";
+        btn.innerText = "ГРАТИ";
         btn.classList.add('paused');
         screen.classList.add('game-paused');
     } else {
         if(screen.style.display === 'flex') bgMusic.play();
-        btn.innerText = "ПАУЗА (P)";
+        btn.innerText = "ПАУЗА";
         btn.classList.remove('paused');
         screen.classList.remove('game-paused');
     }
@@ -105,26 +119,25 @@ function togglePause() {
 
 function init() {
     const lib = document.getElementById('library');
+    lib.innerHTML = '';
     categories.forEach(cat => {
         const div = document.createElement('div');
-        div.className = 'category-card';
+        div.className = 'category-card' + (cat.words.length ? '' : ' locked');
         div.style.backgroundColor = cat.c;
         div.innerHTML = `<span>${cat.e}</span>${cat.n}`;
-        div.onclick = () => { 
-            bgMusic.volume = volMusic.value;
-            bgMusic.play().catch(() => {});
-            startBlock(cat.words); 
-        };
+        div.onclick = () => { if(cat.words.length) { bgMusic.play(); startBlock(cat.words); } };
         lib.appendChild(div);
     });
 }
 
 function playSnd(name) {
-    if (isPaused) return; // Не грати звуки на паузі
-    const audio = new Audio(name.toUpperCase() + '.m4a');
+    if (isPaused) return;
+    // Використовуємо decodeURIComponent щоб браузер правильно розумів кирилицю
+    const src = decodeURIComponent(name.toUpperCase());
+    const audio = new Audio(src + '.m4a');
     audio.volume = volVoice.value;
     audio.play().catch(() => {
-        const alt = new Audio(name.toUpperCase() + '.mp3');
+        const alt = new Audio(src + '.mp3');
         alt.volume = volVoice.value;
         alt.play().catch(() => {});
     });
@@ -160,8 +173,13 @@ function render() {
 }
 
 window.onkeydown = (e) => {
-    // Пауза на клавішу "P" (англійська)
-    if (e.code === 'KeyP') { togglePause(); return; }
+    // Пауза ТІЛЬКИ через Ctrl+P або Alt+P, щоб не конфліктувати з літерою "З"
+    if (e.code === 'KeyP' && (e.ctrlKey || e.altKey)) { 
+        e.preventDefault();
+        togglePause(); 
+        return; 
+    }
+    
     if (isPaused) return;
 
     if (isPrize && (e.code === 'Space' || e.code === 'Enter')) { nextAction(); return; }
