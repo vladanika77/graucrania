@@ -2,40 +2,27 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Гра для Андрія</title>
     <style>
-        :root { 
-            --blue: #4da6ff; --dark-blue: #004d99; --yellow: #ffcc00; 
-            --red: #ff4d4d; --green: #2ecc71; --sand: #f0e4d0; 
-        }
+        :root { --blue: #4da6ff; --dark-blue: #004d99; --yellow: #ffcc00; --red: #ff4d4d; --green: #2ecc71; --sand: #f0e4d0; }
         body { margin: 0; font-family: 'Arial Rounded MT Bold', sans-serif; overflow: hidden; background: #eef9ff; }
         #library { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; padding: 30px; height: 100vh; box-sizing: border-box; overflow-y: auto; }
         .category-card { border-radius: 25px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; transition: 0.3s; font-size: 22px; color: var(--dark-blue); border: 5px solid var(--dark-blue); box-shadow: 0 8px 0 rgba(0,0,0,0.1); height: 160px; text-align: center; font-weight: bold; }
         .category-card span { font-size: 50px; margin-bottom: 10px; }
         .locked { opacity: 0.4; cursor: default; filter: grayscale(0.5); }
         #game-screen { display: none; width: 100vw; height: 100vh; background: var(--blue); position: relative; flex-direction: column; justify-content: center; align-items: center; }
-        .cloud { position: absolute; background: #fff; border-radius: 100px; opacity: 0.8; pointer-events: none; z-index: 1; }
-        .cloud::after, .cloud::before { content: ''; position: absolute; background: #fff; border-radius: 50%; }
-        .cloud::after { width: 80px; height: 80px; top: -40px; left: 20px; }
-        .cloud::before { width: 60px; height: 60px; top: -20px; right: 20px; }
         #word-display { display: flex; gap: 15px; z-index: 10; flex-wrap: wrap; justify-content: center; }
         .tile { width: 130px; height: 170px; background: var(--sand); border-radius: 25px; display: flex; justify-content: center; align-items: center; font-size: 100px; font-weight: bold; color: var(--dark-blue); border: 5px solid var(--dark-blue); box-shadow: 0 10px 0 #cbdadb; }
         .active { background: var(--yellow); border-color: #f39c12; animation: breathe 1s infinite alternate; }
-        .correct { background: var(--green); color: #fff; border-color: #27ae60; transition: 0.3s; }
+        .correct { background: var(--green); color: #fff; border-color: #27ae60; }
         .error { background: var(--red) !important; animation: shake 0.3s; color: #fff; }
         @keyframes breathe { from { transform: scale(1); } to { transform: scale(1.1); } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
-        @keyframes moveClouds { from { left: -300px; } to { left: 110vw; } }
         #prize-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; flex-direction: column; justify-content: center; align-items: center; background: #000; }
         #prize-bg { position: absolute; width: 100%; height: 100%; background-size: cover; background-position: center; filter: blur(35px) brightness(0.5); z-index: -1; }
-        #prize-title { position: absolute; top: 40px; color: #fff; font-size: 60px; text-transform: uppercase; letter-spacing: 5px; z-index: 10; text-shadow: 3px 3px 15px #000; }
-        #prize-img { max-width: 90%; max-height: 75%; border: 10px solid #fff; border-radius: 20px; z-index: 5; object-fit: contain; visibility: hidden; }
-        .btn-next { margin-top: 25px; padding: 25px 50px; font-size: 32px; background: var(--green); color: #fff; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; z-index: 10; box-shadow: 0 8px 0 #1e8449; display: none; }
-        #final-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 500; overflow: hidden; flex-direction: column; justify-content: center; align-items: center; }
-        .fw { position: absolute; border-radius: 50%; opacity: 0; pointer-events: none; }
-        .final-text { color: var(--yellow); font-size: 100px; text-align: center; text-shadow: 0 0 30px #ffcc00; margin-bottom: 60px; z-index: 600; pointer-events: none; font-weight: bold; }
-        .final-btn { padding: 25px 60px; font-size: 35px; background: var(--yellow); border: none; border-radius: 25px; cursor: pointer; font-weight: bold; z-index: 600; box-shadow: 0 10px 0 #b89600; }
+        #prize-title { position: absolute; top: 40px; color: #fff; font-size: 60px; text-transform: uppercase; z-index: 10; }
+        #prize-img { max-width: 90%; max-height: 75%; border: 10px solid #fff; border-radius: 20px; z-index: 5; object-fit: contain; }
+        .btn-next { margin-top: 25px; padding: 20px 40px; font-size: 28px; background: var(--green); color: #fff; border: none; border-radius: 20px; cursor: pointer; display: none; }
     </style>
 </head>
 <body>
@@ -44,36 +31,13 @@
 <div id="prize-overlay">
     <div id="prize-bg"></div>
     <div id="prize-title"></div>
-    <img id="prize-img" src="" onload="this.style.visibility='visible'">
-    <button id="btn-space" class="btn-next" onclick="nextAction()">ПРОБІЛ - наступне слово ➔</button>
-</div>
-<div id="final-screen">
-    <div class="final-text">ТИ МОЛОДЕЦЬ!</div>
-    <button class="final-btn" onclick="location.reload()">В БІБЛІОТЕКУ</button>
+    <img id="prize-img" src="">
+    <button id="btn-space" class="btn-next" onclick="nextAction()">ПРОБІЛ - далі</button>
 </div>
 
 <script>
 const categories = [
-    { n: "Тварини", e: "🐾", c: "#FFadad", words: ["БІЛКА","ВЕДМІДЬ","ВІВЦЯ","ВІСЛЮК","ВОВК","ГОЛУБ","ГУСАК","ДЕЛЬФІН","ЖАБА","ЖИРАФ","ЗАЯЦЬ","ЗЕБРА","ІГУАНА","ЇЖАК","КОРОВА","КУРКА","ЛЕВ","ЛИСИЦЯ","МАВПА","ПАНДА","ПЕС","ПІВЕНЬ","ПІНГВІН","СЛОН","СОРОКА","ТИГР","УДАВ","ФЛАМІНГО","ЧЕРЕПАХА"] },
-    { n: "Їжа", e: "🍎", c: "#FFd6a5", words: [] },
-    { n: "Частини тіла", e: "👂", c: "#FDffb6", words: [] },
-    { n: "Кольори", e: "🌈", c: "#CAffbf", words: [] },
-    { n: "Цифри", e: "🔢", c: "#9Bf6ff", words: [] },
-    { n: "Сім'я", e: "👨‍👩‍👦", c: "#A0c4ff", words: [] },
-    { n: "Напої", e: "🥤", c: "#Bdb2ff", words: [] },
-    { n: "Фрукти/Овочі", e: "🍇", c: "#FfC6ff", words: [] },
-    { n: "Емоції", e: "😊", c: "#FFadad", words: [] },
-    { n: "Дієслова", e: "🏃", c: "#FFd6a5", words: [] },
-    { n: "Прикметники", e: "✨", c: "#FDffb6", words: [] },
-    { n: "Місця", e: "🌳", c: "#CAffbf", words: [] },
-    { n: "Спорт", e: "⚽", c: "#9Bf6ff", words: [] },
-    { n: "Іграшки", e: "🧸", c: "#A0c4ff", words: [] },
-    { n: "Дім", e: "🏠", c: "#Bdb2ff", words: [] },
-    { n: "Транспорт", e: "🚗", c: "#FfC6ff", words: [] },
-    { n: "Погода", e: "🌤", c: "#FFadad", words: [] },
-    { n: "Одяг", e: "👗", c: "#FFd6a5", words: [] },
-    { n: "Час", e: "📅", c: "#FDffb6", words: [] },
-    { n: "Різне", e: "🌀", c: "#CAffbf", words: [] }
+    { n: "Тварини", e: "🐾", c: "#FFadad", words: ["БІЛКА","ВЕДМІДЬ","ВІВЦЯ","ВІСЛЮК","ВОВК","ГОЛУБ","ГУСАК","ДЕЛЬФІН","ЖАБА","ЖИРАФ","ЗАЯЦЬ","ЗЕБРА","ІГУАНА","ЇЖАК","КОРОВА","КУРКА","ЛЕВ","ЛИСИЦЯ","МАВПА","ПАНДА","ПЕС","ПІВЕНЬ","ПІНГВІН","СЛОН","СОРОКА","ТИГР","УДАВ","ФЛАМІНГО","ЧЕРЕПАХА"] }
 ];
 
 let currentWords = [], wordIdx = 0, charIdx = 0, isPrize = false;
@@ -82,88 +46,75 @@ function init() {
     const lib = document.getElementById('library');
     categories.forEach(cat => {
         const div = document.createElement('div');
-        div.className = 'category-card' + (cat.words.length ? '' : ' locked');
+        div.className = 'category-card';
         div.style.backgroundColor = cat.c;
         div.innerHTML = `<span>${cat.e}</span>${cat.n}`;
-        div.onclick = () => { if(cat.words.length) startBlock(cat.words); };
+        div.onclick = () => startBlock(cat.words);
         lib.appendChild(div);
     });
 }
 
 function playSnd(name) {
-    // Змінено: використовуємо пряму назву без encodeURIComponent для кирилиці
+    // Використовуємо прямий шлях без кодування, як ти просила
     const audio = new Audio(name.toUpperCase() + '.m4a');
     audio.play().catch(() => {
         new Audio(name.toUpperCase() + '.mp3').play().catch(() => {});
     });
 }
 
-function spawnClouds() {
-    const scr = document.getElementById('game-screen');
-    for(let i=0; i<6; i++) {
-        const c = document.createElement('div');
-        c.className = 'cloud';
-        c.style.width = (120 + Math.random()*130) + 'px';
-        c.style.height = '45px';
-        c.style.top = (Math.random()*70) + '%';
-        c.style.animation = `moveClouds ${25 + Math.random()*20}s linear infinite`;
-        c.style.animationDelay = -(Math.random()*20) + 's';
-        scr.appendChild(c);
-    }
-}
-
 function startBlock(words) {
     currentWords = [...words].sort(() => Math.random() - 0.5);
     wordIdx = 0;
     document.getElementById('library').style.display = 'none';
-    const scr = document.getElementById('game-screen');
-    scr.style.display = 'flex';
-    scr.innerHTML = '<div id="word-display"></div>';
-    spawnClouds();
+    document.getElementById('game-screen').style.display = 'flex';
     nextWord();
 }
 
 function nextWord() {
-    if (wordIdx >= currentWords.length) { showFinal(); return; }
+    if (wordIdx >= currentWords.length) { location.reload(); return; }
     charIdx = 0; isPrize = false;
     render();
-    setTimeout(() => playSnd(currentWords[wordIdx]), 600);
+    // Озвучуємо ціле слово при старті
+    setTimeout(() => playSnd(currentWords[wordIdx]), 300);
+    // Озвучуємо ПЕРШУ літеру через невелику паузу після слова
+    setTimeout(() => playSnd(currentWords[wordIdx][0]), 1500);
 }
 
 function render() {
-    const display = document.getElementById('word-display');
-    display.innerHTML = '';
+    const display = document.getElementById('game-screen');
+    display.innerHTML = '<div id="word-display"></div>';
+    const wordWrap = document.getElementById('word-display');
+    
     currentWords[wordIdx].split('').forEach((l, i) => {
         const d = document.createElement('div');
         d.className = 'tile';
         if (i < charIdx) d.classList.add('correct');
         if (i === charIdx) d.classList.add('active');
         d.innerText = l;
-        display.appendChild(d);
+        wordWrap.appendChild(d);
     });
 }
 
 window.onkeydown = (e) => {
-    if (document.getElementById('game-screen').style.display === 'flex' || isPrize) {
-        if (!['F5', 'F11', 'F12'].includes(e.key)) e.preventDefault();
-    }
     if (isPrize && (e.code === 'Space' || e.code === 'Enter')) { nextAction(); return; }
     if (document.getElementById('game-screen').style.display === 'flex' && !isPrize) {
         const key = e.key.toUpperCase();
         const target = currentWords[wordIdx][charIdx];
+
         if (key === target) {
+            // ЖОДНОГО ЗВУКУ ПРИ НАТИСКАННІ!
             charIdx++;
+            render();
+            
             if (charIdx === currentWords[wordIdx].length) {
-                render();
-                document.querySelectorAll('.tile').forEach(t => t.classList.add('correct'));
-                setTimeout(() => playSnd(currentWords[wordIdx]), 600);
-                setTimeout(showPrize, 2500);
+                // Слово зібрано: звучить ціле слово
+                setTimeout(() => playSnd(currentWords[wordIdx]), 500);
+                setTimeout(showPrize, 2000);
             } else {
-                render();
-                // Звук лише при появі нової плитки
-                setTimeout(() => playSnd(currentWords[wordIdx][charIdx]), 300);
+                // Перехід до наступної літери: звучить ТІЛЬКИ наступна літера
+                setTimeout(() => playSnd(currentWords[wordIdx][charIdx]), 400);
             }
-        } else if (!['Shift','Control','Alt', 'CapsLock'].includes(e.key)) {
+        } else if (!['Shift','Alt','Control','CapsLock'].includes(e.key)) {
             const active = document.querySelector('.active');
             if(active) { active.classList.add('error'); setTimeout(() => active.classList.remove('error'), 400); }
         }
@@ -173,40 +124,18 @@ window.onkeydown = (e) => {
 function showPrize() {
     const word = currentWords[wordIdx];
     const imgFile = word.toUpperCase() + '.jpg';
-    const img = document.getElementById('prize-img');
-    img.style.visibility = 'hidden';
-    img.src = imgFile;
+    document.getElementById('prize-img').src = imgFile;
     document.getElementById('prize-bg').style.backgroundImage = `url('${imgFile}')`;
     document.getElementById('prize-title').innerText = word;
-    document.getElementById('btn-space').style.display = 'none';
     isPrize = true;
     document.getElementById('prize-overlay').style.display = 'flex';
-    setTimeout(() => { document.getElementById('btn-space').style.display = 'block'; }, 1500);
+    setTimeout(() => { document.getElementById('btn-space').style.display = 'block'; }, 1000);
 }
 
 function nextAction() {
     document.getElementById('prize-overlay').style.display = 'none';
     wordIdx++;
     nextWord();
-}
-
-function showFinal() {
-    document.getElementById('final-screen').style.display = 'flex';
-    setInterval(createFirework, 300);
-}
-
-function createFirework() {
-    const f = document.createElement('div');
-    f.className = 'fw';
-    const x = Math.random() * window.innerWidth;
-    const y = Math.random() * window.innerHeight;
-    const size = 200 + Math.random() * 300; 
-    const color = `hsl(${Math.random() * 360}, 100%, 60%)`;
-    f.style.left = x + 'px'; f.style.top = y + 'px';
-    f.style.boxShadow = `0 0 ${size}px ${size/2}px ${color}`;
-    document.getElementById('final-screen').appendChild(f);
-    f.animate([{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: `scale(${20 + Math.random()*10})` }], 1200);
-    setTimeout(() => f.remove(), 1200);
 }
 
 init();
